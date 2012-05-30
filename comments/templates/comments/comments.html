@@ -14,13 +14,13 @@
 	$('#send_comment_btn').click(function(){
 		var textArea = $('#comment_text');
 		if(textArea.val().trim() == "") return;
-		$.post('/comments/post/', {'owner_model': '{{ owner._meta.verbose_name }}', 'owner_id': '{{ owner.pk }}', 'comment': textArea.val()}, function(response){
-			if(response.status != "ok") {
-				alert("There was an error while trying to post a comment");
-				return;
-			}
+		$.post('/comments/post/', {'owner_model': '{{ owner._meta.verbose_name }}', 'owner_id': '{{ owner.pk }}', 'comment': textArea.val()}).success(function(response){
+			if(response.status != "ok") return;
 			$('#comments').append('<div class="comment">'+response.author+' said: "'+response.body+'" at '+response.created+'</div>');
 			textArea.val('');
+		}).error(function(response){
+			response = $.parseJSON(response.responseText);
+			alert(response.error);
 		});
-	});
+	});	
 </script>

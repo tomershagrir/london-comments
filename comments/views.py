@@ -22,5 +22,7 @@ def post_comment(request):
         owner = owner_model.query().get(pk = owner_pk)
         comment = Comment.query().create(owner = owner, body=body, author = request.user)
         return JsonResponse('{"status":"ok", "author":"%(author)s", "body":"%(body)s", "created":"%(created)s"}' % comment)
-    except:
-        return JsonResponse('{"status":"error"}')
+    except Exception as e:
+        response = JsonResponse('{"status":"error", "error":"%s"}' % str(e).replace('"', '\\"'))
+        response.status_code = 500
+        return response
