@@ -2,31 +2,29 @@
 
 ### How to use it:
 
-- install it 
-- add it to INSTALLED_APPS
+1. Install it 
+2. Add it to INSTALLED_APPS
 
-    $INSTALLED_APPS = {
-    $    ...
-    $    'comments': 'comments'
-    $}
+	INSTALLED_APPS = {
+		...
+		'comments': 'comments'
+		}
 
-- add it to TEMPLATE_CONTEXT_PROCESSORS
+3. Add it to TEMPLATE_CONTEXT_PROCESSORS
 
 	TEMPLATE_CONTEXT_PROCESSORS = (
 	        ...
 	        'comments.context_processors.basic',
 	        )
 	        
-- add MODELS_WITH_COMMENTS to *settings.py*
+4. Add MODELS_WITH_COMMENTS to *settings.py* like dict in *{'model': 'app'}* format
 	        
-	       
-	#dict in {'model': 'app'} format
-	MODELS_WITH_COMMENTS = {
-	                        'Profile': 'profiles',
-	                        'Page': 'pages',
-	                        }
+    MODELS_WITH_COMMENTS = {
+    					'Profile': 'profiles',
+    					'Page': 'pages',
+    }
 	                        
-- add it to template as
+5. Add it to template as
 
 	{{ render_comments_for(obj) }}
 	
