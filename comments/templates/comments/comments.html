@@ -1,0 +1,26 @@
+<h2>Comments:</h2>
+<div id="comments">
+{% for comment in comments %}
+	<div class="comment">
+		{{ comment.author }} said: "{{ comment.get_content() }}" at {{ comment.created }}
+	</div>
+{% endfor %}
+</div>
+<div class="comment_form">
+	<textarea id="comment_text" rows="5"></textarea><br/>
+	<input id="send_comment_btn" type="button" value="Post a comment"/>
+</div>
+<script>
+	$('#send_comment_btn').click(function(){
+		var textArea = $('#comment_text');
+		if(textArea.val().trim() == "") return;
+		$.post('/comments/post/', {'owner_model': '{{ owner._meta.verbose_name }}', 'owner_id': '{{ owner.pk }}', 'comment': textArea.val()}, function(response){
+			if(response.status != "ok") {
+				alert("There was an error while trying to post a comment");
+				return;
+			}
+			$('#comments').append('<div class="comment">'+response.author+' said: "'+response.body+'" at '+response.created+'</div>');
+			textArea.val('');
+		});
+	});
+</script>
