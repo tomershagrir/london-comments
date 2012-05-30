@@ -5,10 +5,10 @@
 1. Install it 
 2. Add it to INSTALLED_APPS
 
-    INSTALLED_APPS = {
-    ...
-    'comments': 'comments'
-    }
+    $ INSTALLED_APPS = {
+    $     ...
+    $     'comments': 'comments'
+    $ }
 
 3. Add it to TEMPLATE_CONTEXT_PROCESSORS
 
