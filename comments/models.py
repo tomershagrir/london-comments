@@ -14,3 +14,6 @@ class Comment(models.Model):
     
     def get_content(self):
         return mark_safe(self['body'])
+    
+    def get_comments(self):
+        return Comment.query().filter(owner=self)
