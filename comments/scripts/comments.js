@@ -5,7 +5,6 @@ $(document).ready(function(){
 	var comments = $('#comments');
 
 	var newCommentHTML = '<div class="comment" style="margin-left:${margin}px;"><b>${author}</b> <i>said</i>: "${comment}" at <i>${date}</i><br/><a class="reply-link" id="${id}">reply</a></div>';
-	addToRoot = true;
 
 	comments.delegate('.reply-link, .add-comment', 'click', function(){
 		var link = $(this);
@@ -13,6 +12,7 @@ $(document).ready(function(){
 		commentForm.appendTo(link.parent()).show();
 		ownerIDInput.val(OWNER_ID);
 		ownerModelInput.val(OWNER_MODEL);
+		addToRoot = true;
 		if(link.hasClass('reply-link')) {
 			addToRoot = false;
 			link.hide();
@@ -20,7 +20,7 @@ $(document).ready(function(){
 			ownerIDInput.val(link.attr('id'));
 			ownerModelInput.val('Comment');
 		}
-		else insertAfter = comments.children().last();
+		else insertAfter = comments.children('.comment').last();
 	});
 
 	$('#send_comment_btn').click(function(){

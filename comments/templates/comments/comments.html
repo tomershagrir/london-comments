@@ -19,9 +19,10 @@
 <h2>Comments:</h2>
 <div id="comments" class="comments">
 	{{ comments }}
-	<a class="add-comment">Add comment</a>
+	<a class="add-comment" href="#add-comment">Add comment</a>
 </div>
 <div id="comment_form" class="comment_form" style="display:none;">
+	<a name="add-comment"></a>
 	<textarea id="comment_text" name="comment" rows="5"></textarea><br/>
 	<input id="owner_id" type="hidden" name="owner_id" />
 	<input id="owner_model" type="hidden" name="owner_model" />
@@ -31,6 +32,4 @@
 	OWNER_ID = '{{ owner.pk }}';
 	OWNER_MODEL = '{{ owner._meta.verbose_name }}';
 </script>
-<script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
-{# {% body_scripts "comments:jquery-tmpl,comments:comments" %} #}
-{% body_scripts "comments:comments" %}
+{% body_scripts "comments:jquery-tmpl,comments:comments" %}
