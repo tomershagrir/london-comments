@@ -36,7 +36,10 @@ def post_comment(request):
         body, model_name, owner_pk = request.POST.values()
         owner_model = get_model("%s.%s" % (MODELS_WITH_COMMENTS[model_name], model_name))
         owner = owner_model.query().get(pk = owner_pk)
-        author = request.office_operator or request.user if request.user.is_authenticated() else None
+        if request.office_operator:
+            author = request.office_operator
+        else:
+            author = request.user if request.user.is_authenticated() else None
         comment = Comment.query().create(owner = owner, body=body, author = author)
         return JsonResponse('{"status":"ok", "pk":"%s", "author":"%s", "body":"%s", "created":"%s"}' % 
                             (comment['pk'], comment['author'] or "Anonymous", comment['body'], comment['created'].strftime('%Y-%m-%d, %H:%M')))
