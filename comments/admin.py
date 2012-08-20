@@ -4,9 +4,9 @@ from models import Comment
 
 class ModuleComment(admin.CrudModule):
     model = Comment
-    exclude = ('owner',)
+    exclude = ('owner', 'author')
     readonly_fields = ('created',)
-    list_display = ('author','owner','created',)
+    list_display = ('owner','author','created',)
     
 class AppComments(admin.AdminApplication):
     title = 'Comments'

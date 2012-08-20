@@ -4,3 +4,4 @@
 .tmp*
 .project
 .pydevproject
+.DS_Store

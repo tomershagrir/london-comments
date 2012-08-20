@@ -1,4 +1,7 @@
 <div class="comment" style="margin-left:{{ margin }}px;">
+	{% if comment.author.profile_photo %}
+	<img height="50px" title="{{ comment.author }}" alt="" src="{{ comment.author.profile_photo.url }}" id="">
+	{% endif %}
 	<b>{{ comment.author or "Anonymous" }}</b> <i>said</i>: "{{ comment.get_content() }}" at <i>{{ comment.created.strftime('%Y-%m-%d, %H:%M') }}</i><br/>
 	<a class="reply-link" id="{{ comment.pk }}">reply</a>
 </div>
