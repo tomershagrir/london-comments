@@ -26,6 +26,7 @@ $(document).ready(function(){
 			var childrenComments = comments.children('.comment');
 			if(childrenComments.length) insertAfter = childrenComments.last();
 		}
+		return false;
 	});
 
 	$('#send_comment_btn').click(function(){
