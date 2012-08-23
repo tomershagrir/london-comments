@@ -7,8 +7,8 @@ class Comment(models.Model):
     """
     Stores comments for different content types
     """
-    owner = models.ForeignKey(related_name="comments")
-    author = models.ForeignKey('auth.User', related_name="comments", default=None, blank=True, null=True)
+    owner = models.ForeignKey(related_name="comments", delete_cascade=True)
+    author = models.ForeignKey('auth.User', related_name="comments", default=None, blank=True, null=True, delete_cascade=True)
     created = models.DateTimeField(default=datetime.now, blank=True)
     body = models.TextField()
     
