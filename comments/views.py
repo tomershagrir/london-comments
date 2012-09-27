@@ -13,22 +13,28 @@ MODELS_WITH_COMMENTS.update({'Comment': 'comments'})
 SUBCOMMENT_LEFT_MARGIN = 25
 
 #function to render comments template
-def render_comments(owner): 
+def render_comments(owner, list_template='comments', item_template='comment', margin=SUBCOMMENT_LEFT_MARGIN):
+    print('1', list_template, item_template) # XXX
     model_name = owner._meta.verbose_name
     if model_name in MODELS_WITH_COMMENTS:
-        return render_to_string('comments', {'owner': owner, 'comments': get_comments_html(owner)})
+        return render_to_string(list_template, {
+            'owner': owner,
+            'comments': get_comments_html(owner, item_template=item_template, margin=margin),
+            })
     return ""
 
 #function to render comments with sub-comments
-def get_comments_html(owner, result = "", level = 0):
+def get_comments_html(owner, result="", level=0, item_template='comment', margin=SUBCOMMENT_LEFT_MARGIN):
+    print('2', item_template) # XXX
     comments = Comment.query().filter(owner=owner)
     for comment in comments:
-        result += get_comments_html(comment, get_single_comment_html(comment, level), level+1) #recursively render subcomments
+        result += get_comments_html(comment, get_single_comment_html(comment, level, item_template, margin), level+1, item_template, margin) #recursively render subcomments
     return result  
     
 #function to render single comment
-def get_single_comment_html(comment, level):
-    return render_to_string('comment', {'comment': comment, 'margin': level*SUBCOMMENT_LEFT_MARGIN}) #FIXME: 
+def get_single_comment_html(comment, level, template='comment', margin=SUBCOMMENT_LEFT_MARGIN):
+    print('3', template) # XXX
+    return render_to_string(template, {'comment': comment, 'margin': level * margin})
 
 #function to receive comment posting AJAX request 
 def post_comment(request):
