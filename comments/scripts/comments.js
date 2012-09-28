@@ -40,8 +40,8 @@ $(document).ready(function(){
         if(insertAfter) newComment.insertAfter(insertAfter)
         else newComment.prependTo(comments);
         
-        textArea.val('');
-        form.hide();
+        commentForm.find('#comment_text').val('');
+        commentForm.hide();
         link.show();
     }
 
