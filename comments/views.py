@@ -6,6 +6,7 @@ from london.conf import settings
 from london.db.utils import get_model
 
 from models import Comment
+import signals
 
 MODELS_WITH_COMMENTS = getattr(settings, 'MODELS_WITH_COMMENTS', {})
 MODELS_WITH_COMMENTS.update({'Comment': 'comments'})
@@ -45,7 +46,11 @@ def post_comment(request):
         owner_model = get_model("%s.%s" % (MODELS_WITH_COMMENTS[model_name], model_name))
         owner = owner_model.query().get(pk = owner_pk)
         author = request.user if request.user.is_authenticated() else None
-        comment = Comment.query().create(owner = owner, body=body, author = author)
+
+        comment = Comment(owner = owner, body=body, author = author)
+        signals.post_comment.send(sender=owner, request=request, comment=comment)
+        comment.save()
+
         return JsonResponse({
             "status":"ok",
             "pk": comment['pk'],
