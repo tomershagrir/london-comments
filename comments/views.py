@@ -13,25 +13,25 @@ MODELS_WITH_COMMENTS.update({'Comment': 'comments'})
 SUBCOMMENT_LEFT_MARGIN = 25
 
 #function to render comments template
-def render_comments(owner, list_template='comments', item_template='comment', margin=SUBCOMMENT_LEFT_MARGIN):
+def render_comments(theme, owner, list_template='comments', item_template='comment', margin=SUBCOMMENT_LEFT_MARGIN):
     model_name = owner._meta.verbose_name
     if model_name in MODELS_WITH_COMMENTS:
         return render_to_string(list_template, {
             'owner': owner,
-            'comments': get_comments_html(owner, item_template=item_template, margin=margin),
+            'comments': get_comments_html(theme, owner, item_template=item_template, margin=margin),
             })
     return ""
 
 #function to render comments with sub-comments
-def get_comments_html(owner, result="", level=0, item_template='comment', margin=SUBCOMMENT_LEFT_MARGIN):
+def get_comments_html(theme, owner, result="", level=0, item_template='comment', margin=SUBCOMMENT_LEFT_MARGIN):
     comments = Comment.query().filter(owner=owner)
     for comment in comments:
-        result += get_comments_html(comment, get_single_comment_html(comment, level, item_template, margin), level+1, item_template, margin) #recursively render subcomments
+        result += get_comments_html(theme, comment, get_single_comment_html(comment, level, theme, item_template, margin), level+1, item_template, margin) #recursively render subcomments
     return result  
     
 #function to render single comment
-def get_single_comment_html(comment, level, template='comment', margin=SUBCOMMENT_LEFT_MARGIN):
-    return render_to_string(template, {'comment': comment, 'margin': level * margin})
+def get_single_comment_html(comment, level, theme, template='comment', margin=SUBCOMMENT_LEFT_MARGIN):
+    return render_to_string(template, {'comment': comment, 'margin': level * margin}, theme=theme)
 
 #function to receive comment posting AJAX request 
 def post_comment(request):
@@ -55,3 +55,4 @@ def post_comment(request):
         response = JsonResponse({"status":"error", "error":str(e).replace('"', '\\"')})
         response.status_code = 500
         return response
+
