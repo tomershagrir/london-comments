@@ -44,3 +44,20 @@ def post_comment(request):
         response = JsonResponse('{"status":"error", "error":"%s"}' % str(e).replace('"', '\\"'))
         response.status_code = 500
         return response
+
+#function to receive comment from operators only posting AJAX request
+def post_operator_comment(request):
+    try:
+        MODELS_WITH_COMMENTS = getattr(settings, 'MODELS_WITH_COMMENTS', {})
+        MODELS_WITH_COMMENTS.update({'Comment': 'comments'})
+        body, model_name, owner_pk = request.POST.values()
+        owner_model = get_model("%s.%s" % (MODELS_WITH_COMMENTS[model_name], model_name))
+        owner = owner_model.query().get(pk = owner_pk)
+        operator = request.office_operator
+        comment = Comment.query().create(owner = owner, body=body, operator=operator)
+        return JsonResponse('{"status":"ok", "pk":"%s", "operator":"%s", "body":"%s", "created":"%s"}' %
+                            (comment['pk'], operator['name'] or operator['username'], comment['body'], comment['created'].strftime('%Y-%m-%d, %H:%M')))
+    except Exception as e:
+        response = JsonResponse('{"status":"error", "error":"%s"}' % str(e).replace('"', '\\"'))
+        response.status_code = 500
+        return response
