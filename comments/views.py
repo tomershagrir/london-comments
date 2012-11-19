@@ -37,7 +37,8 @@ def get_single_comment_html(comment, level, theme, template='comment', margin=SU
     return render_to_string(template, {'comment': comment, 'margin': level * margin}, theme=theme)
 
 #function to receive comment posting AJAX request 
-def post_comment(request):
+def post_comment(request, operator=None):
+    # FIXME: the "operator" here is bad. We must use "author" or something agnostic as it
     try:
         body = request.POST['body']
         model_name = request.POST['owner_model']
@@ -47,7 +48,7 @@ def post_comment(request):
         owner = owner_model.query().get(pk = owner_pk)
         author = request.user if request.user.is_authenticated() else None
 
-        comment = Comment(owner = owner, body=body, author = author)
+        comment = Comment(owner = owner, body=body, author = author, operator = operator)
         signals.post_comment.send(sender=owner, request=request, comment=comment)
         comment.save()
 
@@ -55,6 +56,7 @@ def post_comment(request):
             "status":"ok",
             "pk": comment['pk'],
             "author": unicode(comment['author']) if comment['author'] else "Anonymous",
+            "operator": operator,
             "body": comment['body'],
             "created": comment['created'].strftime('%Y-%m-%d, %H:%M'),
             })
