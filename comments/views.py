@@ -37,7 +37,7 @@ def get_single_comment_html(comment, level, theme, template='comment', margin=SU
     return render_to_string(template, {'comment': comment, 'margin': level * margin}, theme=theme)
 
 #function to receive comment posting AJAX request 
-def post_comment(request, author=None):
+def post_comment(request, author=None, additional_fields=None):
     try:
         body = request.POST['body']
         model_name = request.POST['owner_model']
@@ -45,16 +45,21 @@ def post_comment(request, author=None):
 
         owner_model = get_model("%s.%s" % (MODELS_WITH_COMMENTS[model_name], model_name))
         owner = owner_model.query().get(pk = owner_pk)
-        author = author or request.user if request.user.is_authenticated() else None
+        if not author:
+            author = request.user if request.user.is_authenticated() else None
 
-        comment = Comment(owner = owner, body=body, author = author)
+        fields = additional_fields if isinstance(additional_fields,dict) else {}
+        fields['owner'] = owner
+        fields['body'] = body
+        fields['author'] = author
+        comment = Comment(_save=True, **fields)
+
         signals.post_comment.send(sender=owner, request=request, comment=comment)
-        comment.save()
 
         return JsonResponse({
             "status":"ok",
             "pk": comment['pk'],
-            "author": unicode(comment['author']) if comment['author'] else "Anonymous",
+            "author": unicode(author) if author else "Anonymous",
             "body": comment['body'],
             "created": comment['created'].strftime('%Y-%m-%d, %H:%M'),
             })

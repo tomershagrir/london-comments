@@ -27,3 +27,10 @@ class Comment(models.Model):
     
     def get_comments(self):
         return Comment.query().filter(owner=self)
+
+    def get_author(self):
+        if isinstance(self['author'], dict) and 'pk' in self['author'] and 'class' in self['author']:
+            return self['author']['class'].query().get(pk=self['author']['pk'])
+
+        return self['author']
+
